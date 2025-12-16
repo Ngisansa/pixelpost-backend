@@ -1,8 +1,15 @@
-# Environment variables
+node_modules/
 .env
+.env.local
+.env.production
 
-# Server secrets
 server/keys/
+server/keys/*.json
 
-# JSON secrets
-*.json
+dist/
+build/
+
+*.log
+*.zip
+
+.DS_Store

@@ -1,0 +1,8 @@
+# Environment variables
+.env
+
+# Server secrets
+server/keys/
+
+# JSON secrets
+*.json

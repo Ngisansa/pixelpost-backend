@@ -1,14 +1,19 @@
 // PixelPost Social Data Constants
 import { COLORS, IMAGES } from './theme';
 
-// Subscription Plans
+/* =====================================================
+   SUBSCRIPTION PLANS (RECURRING)
+   ===================================================== */
+
 export const SUBSCRIPTION_PLANS = [
   {
     id: 'free',
     name: 'Free',
-    price: 0,
+    priceUSD: 0,
+    priceKES: 0,
     currency: 'USD',
     period: 'forever',
+    purchasable: true,
     features: [
       '5 posts per month',
       '2 social accounts',
@@ -22,13 +27,15 @@ export const SUBSCRIPTION_PLANS = [
     ],
     recommended: false,
   },
+
   {
     id: 'pro_monthly',
     name: 'Pro',
-    price: 9.99,
-    priceNGN: 15000,
+    priceUSD: 9.99,
+    priceKES: 1500,
     currency: 'USD',
     period: 'month',
+    purchasable: false, // 🚧 disabled for launch
     features: [
       'Unlimited posts',
       '10 social accounts',
@@ -41,13 +48,15 @@ export const SUBSCRIPTION_PLANS = [
     limitations: [],
     recommended: true,
   },
+
   {
     id: 'pro_annual',
     name: 'Pro Annual',
-    price: 99.99,
-    priceNGN: 150000,
+    priceUSD: 99.99,
+    priceKES: 15000,
     currency: 'USD',
     period: 'year',
+    purchasable: false, // 🚧 disabled for launch
     features: [
       'All Pro features',
       '2 months free',
@@ -56,13 +65,15 @@ export const SUBSCRIPTION_PLANS = [
     limitations: [],
     recommended: false,
   },
+
   {
     id: 'business',
     name: 'Business',
-    price: 29.99,
-    priceNGN: 45000,
+    priceUSD: 29.99,
+    priceKES: 4500,
     currency: 'USD',
     period: 'month',
+    purchasable: false, // 🚧 disabled for launch
     features: [
       'Everything in Pro',
       'Unlimited social accounts',
@@ -77,15 +88,53 @@ export const SUBSCRIPTION_PLANS = [
   },
 ];
 
-// Credit Packages for Pay-Per-Use
+/* =====================================================
+   CREDIT PACKAGES (PAY-AS-YOU-GO) — LIVE AT LAUNCH
+   ===================================================== */
+
 export const CREDIT_PACKAGES = [
-  { id: 'credits_10', credits: 10, price: 2.99, priceNGN: 4500 },
-  { id: 'credits_25', credits: 25, price: 5.99, priceNGN: 9000 },
-  { id: 'credits_50', credits: 50, price: 9.99, priceNGN: 15000 },
-  { id: 'credits_100', credits: 100, price: 17.99, priceNGN: 27000 },
+  {
+    id: 'credits_10',
+    name: 'Starter',
+    credits: 10,
+    priceUSD: 1,
+    priceKES: 125,
+    description: 'Perfect for trying PixelPost',
+    recommended: true,
+  },
+  {
+    id: 'credits_25',
+    name: 'Creator',
+    credits: 25,
+    priceUSD: 3,
+    priceKES: 375,
+    description: 'For active creators',
+    recommended: false,
+  },
+  {
+    id: 'credits_50',
+    name: 'Growth',
+    credits: 50,
+    priceUSD: 6,
+    priceKES: 750,
+    description: 'Best value for teams',
+    recommended: false,
+  },
+  {
+    id: 'credits_100',
+    name: 'Power',
+    credits: 100,
+    priceUSD: 10,
+    priceKES: 1250,
+    description: 'High-volume publishing',
+    recommended: false,
+  },
 ];
 
-// Social Media Platforms
+/* =====================================================
+   SOCIAL MEDIA PLATFORMS
+   ===================================================== */
+
 export const SOCIAL_PLATFORMS = [
   {
     id: 'instagram',
@@ -159,7 +208,10 @@ export const SOCIAL_PLATFORMS = [
   },
 ];
 
-// Sample Posts Data
+/* =====================================================
+   SAMPLE POSTS
+   ===================================================== */
+
 export const SAMPLE_POSTS = [
   {
     id: '1',
@@ -175,7 +227,7 @@ export const SAMPLE_POSTS = [
   {
     id: '2',
     image: IMAGES.samplePosts[1],
-    caption: 'New product launch coming soon! Stay tuned. #business #launch',
+    caption: 'New product launch coming soon! #business #launch',
     platforms: ['twitter', 'linkedin'],
     scheduledAt: new Date(Date.now() + 7200000).toISOString(),
     status: 'scheduled',
@@ -183,53 +235,12 @@ export const SAMPLE_POSTS = [
     comments: 0,
     shares: 0,
   },
-  {
-    id: '3',
-    image: IMAGES.samplePosts[2],
-    caption: 'Behind the scenes of our latest project #creative #work',
-    platforms: ['instagram'],
-    scheduledAt: null,
-    status: 'draft',
-    likes: 0,
-    comments: 0,
-    shares: 0,
-  },
-  {
-    id: '4',
-    image: IMAGES.samplePosts[3],
-    caption: 'Monday motivation! Start your week strong. #motivation #monday',
-    platforms: ['facebook', 'twitter', 'linkedin'],
-    scheduledAt: new Date(Date.now() - 86400000).toISOString(),
-    status: 'published',
-    likes: 245,
-    comments: 32,
-    shares: 18,
-  },
-  {
-    id: '5',
-    image: IMAGES.samplePosts[4],
-    caption: 'Check out our latest blog post! Link in bio. #blog #content',
-    platforms: ['instagram', 'pinterest'],
-    scheduledAt: new Date(Date.now() - 172800000).toISOString(),
-    status: 'published',
-    likes: 189,
-    comments: 15,
-    shares: 8,
-  },
-  {
-    id: '6',
-    image: IMAGES.samplePosts[5],
-    caption: 'Team building day! Great vibes with amazing people. #team #culture',
-    platforms: ['linkedin', 'facebook'],
-    scheduledAt: new Date(Date.now() - 259200000).toISOString(),
-    status: 'published',
-    likes: 412,
-    comments: 56,
-    shares: 24,
-  },
 ];
 
-// Analytics Data
+/* =====================================================
+   ANALYTICS
+   ===================================================== */
+
 export const ANALYTICS_DATA = {
   overview: {
     totalPosts: 156,
@@ -237,85 +248,37 @@ export const ANALYTICS_DATA = {
     totalReach: 89200,
     growthRate: 12.5,
   },
-  weeklyStats: [
-    { day: 'Mon', posts: 5, engagement: 320 },
-    { day: 'Tue', posts: 8, engagement: 450 },
-    { day: 'Wed', posts: 6, engagement: 380 },
-    { day: 'Thu', posts: 10, engagement: 620 },
-    { day: 'Fri', posts: 12, engagement: 890 },
-    { day: 'Sat', posts: 4, engagement: 280 },
-    { day: 'Sun', posts: 3, engagement: 210 },
-  ],
-  platformStats: [
-    { platform: 'Instagram', followers: 15420, engagement: 4.2, posts: 45 },
-    { platform: 'Facebook', followers: 8930, engagement: 2.8, posts: 38 },
-    { platform: 'Twitter', followers: 5670, engagement: 3.1, posts: 52 },
-    { platform: 'LinkedIn', followers: 3240, engagement: 5.6, posts: 21 },
-  ],
-  bestTimes: [
-    { day: 'Monday', time: '9:00 AM', engagement: 'High' },
-    { day: 'Tuesday', time: '12:00 PM', engagement: 'Very High' },
-    { day: 'Wednesday', time: '3:00 PM', engagement: 'High' },
-    { day: 'Thursday', time: '6:00 PM', engagement: 'Very High' },
-    { day: 'Friday', time: '10:00 AM', engagement: 'High' },
-  ],
 };
 
-// Hashtag Suggestions
+/* =====================================================
+   HASHTAGS
+   ===================================================== */
+
 export const HASHTAG_SUGGESTIONS = {
-  photography: ['#photography', '#photooftheday', '#instagood', '#picoftheday', '#photo', '#beautiful', '#art', '#nature'],
-  business: ['#business', '#entrepreneur', '#success', '#motivation', '#marketing', '#startup', '#smallbusiness', '#growth'],
-  lifestyle: ['#lifestyle', '#life', '#love', '#happy', '#style', '#fashion', '#beauty', '#health'],
-  travel: ['#travel', '#wanderlust', '#adventure', '#explore', '#vacation', '#travelgram', '#trip', '#tourism'],
-  food: ['#food', '#foodie', '#foodporn', '#yummy', '#delicious', '#cooking', '#recipe', '#homemade'],
-  fitness: ['#fitness', '#gym', '#workout', '#fit', '#health', '#training', '#exercise', '#motivation'],
+  photography: ['#photography', '#photooftheday', '#instagood'],
+  business: ['#business', '#entrepreneur', '#success'],
+  lifestyle: ['#lifestyle', '#life', '#love'],
 };
 
-// Notification Types
+/* =====================================================
+   NOTIFICATIONS
+   ===================================================== */
+
 export const NOTIFICATION_TYPES = {
   POST_SUCCESS: 'post_success',
   POST_FAILED: 'post_failed',
-  SCHEDULE_REMINDER: 'schedule_reminder',
-  ENGAGEMENT_ALERT: 'engagement_alert',
   PAYMENT_SUCCESS: 'payment_success',
   PAYMENT_FAILED: 'payment_failed',
-  SUBSCRIPTION_RENEWAL: 'subscription_renewal',
-  NEW_FEATURE: 'new_feature',
 };
 
-// Sample Notifications
 export const SAMPLE_NOTIFICATIONS = [
   {
     id: '1',
-    type: NOTIFICATION_TYPES.POST_SUCCESS,
-    title: 'Post Published Successfully',
-    message: 'Your post has been published to Instagram and Facebook.',
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    read: false,
-  },
-  {
-    id: '2',
-    type: NOTIFICATION_TYPES.ENGAGEMENT_ALERT,
-    title: 'High Engagement Alert',
-    message: 'Your recent post is getting 50% more engagement than usual!',
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    read: false,
-  },
-  {
-    id: '3',
-    type: NOTIFICATION_TYPES.SCHEDULE_REMINDER,
-    title: 'Scheduled Post Reminder',
-    message: 'You have a post scheduled for 3:00 PM today.',
-    timestamp: new Date(Date.now() - 14400000).toISOString(),
-    read: true,
-  },
-  {
-    id: '4',
     type: NOTIFICATION_TYPES.PAYMENT_SUCCESS,
     title: 'Payment Successful',
-    message: 'Your Pro subscription has been renewed successfully.',
-    timestamp: new Date(Date.now() - 86400000).toISOString(),
-    read: true,
+    message: 'Your credits have been added to your account.',
+    timestamp: new Date().toISOString(),
+    read: false,
   },
 ];
 

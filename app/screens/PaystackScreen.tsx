@@ -4,95 +4,131 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
   Alert,
+  StyleSheet,
 } from "react-native";
+import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { initPaystack, verifyPaystack } from "@/api/payments";
+import { initPaystack, verifyPaystack } from "../api/paystack";
 import { useApp } from "../context/AppContext";
 
-WebBrowser.maybeCompleteAuthSession();
-
 export default function PaystackScreen() {
-  const { activatePro } = useApp();
-  const [email, setEmail] = useState("");
-  const [amount, setAmount] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { addCredits } = useApp();
 
-  async function startPayment() {
-    if (!email.trim()) return Alert.alert("Email required");
-    if (!amount.trim()) return Alert.alert("Amount required");
+  const [email, setEmail] = useState("");
+  const [amountKES, setAmountKES] = useState("125"); // Minimum = KES 125
+  const [loading, setLoading] = useState(false);
+  const [reference, setReference] = useState<string | null>(null);
+
+  const handlePaystack = async () => {
+    if (!email.trim()) {
+      Alert.alert("Validation", "Please enter your email");
+      return;
+    }
+
+    const amount = Number(amountKES);
+    if (isNaN(amount) || amount < 125) {
+      Alert.alert("Validation", "Minimum purchase is KES 125");
+      return;
+    }
 
     setLoading(true);
+
     try {
-      const init = await initPaystack(email.trim(), Number(amount));
+      const init = await initPaystack(email.trim(), amount);
 
-      // Open checkout in browser
-      const result = await WebBrowser.openBrowserAsync(init.url);
-
-if (result.type !== "dismiss") {
-  const verify = await verifyPaystack(init.reference);
-
-  if (verify.status === "success") {
-    Alert.alert("Payment Successful", "You are now subscribed to the Pro Plan.");
-  } else {
-    Alert.alert("Payment Failed", "Payment was not completed.");
-  }
-} else {
-  Alert.alert("Payment Cancelled", "You cancelled the payment.");
-}
-if (verify.status === "success") {
-  await activatePro();
-
-  Alert.alert(
-    "Payment Successful 🎉",
-    "You are now subscribed to the Pro plan.",
-  );
-}
-  Alert.alert(
-    "Payment Successful 🎉",
-    "You are now subscribed to the Pro plan.",
-  );
-}
-      } else {
-        Alert.alert("Payment Failed", "Payment was not completed.");
+      if (!init?.checkoutUrl || !init?.reference) {
+        throw new Error("Invalid Paystack response");
       }
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
+
+      setReference(init.reference);
+
+      await WebBrowser.openBrowserAsync(init.checkoutUrl);
+
+      Alert.alert(
+        "Complete Payment",
+        "After completing payment, tap 'Verify Payment' to unlock credits."
+      );
+    } catch (error: any) {
+      console.error("Paystack init error:", error);
+      Alert.alert("Payment Error", error.message || "Payment failed");
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const handleVerify = async () => {
+    if (!reference) return;
+
+    setLoading(true);
+
+    try {
+      const result = await verifyPaystack(reference);
+
+      if (result.status === "success") {
+        addCredits(10); // KES 125 = 10 credits
+
+        Alert.alert(
+          "Payment Successful",
+          "10 credits have been added to your account"
+        );
+
+        router.replace("/(tabs)/profile");
+      } else {
+        Alert.alert("Payment Incomplete", "Payment was not completed");
+      }
+    } catch (err) {
+      console.error("Verification error:", err);
+      Alert.alert("Verification Error", "Could not verify payment");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pay with Paystack</Text>
+      <Text style={styles.title}>Buy Credits</Text>
 
-      <Text style={styles.label}>Email Address</Text>
       <TextInput
         style={styles.input}
-        placeholder="you@example.com"
+        placeholder="Email address"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
 
-      <Text style={styles.label}>Amount (KES)</Text>
       <TextInput
         style={styles.input}
-        placeholder="1000"
+        placeholder="Amount (KES)"
+        value={amountKES}
+        onChangeText={setAmountKES}
         keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
       />
 
-      <TouchableOpacity style={styles.button} onPress={startPayment}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handlePaystack}
+        disabled={loading}
+      >
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Pay Now</Text>
+          <Text style={styles.buttonText}>Pay with Paystack</Text>
         )}
       </TouchableOpacity>
+
+      {reference && (
+        <TouchableOpacity
+          style={[styles.button, styles.verifyButton]}
+          onPress={handleVerify}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>Verify Payment</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -100,34 +136,32 @@ if (verify.status === "success") {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    paddingTop: 60,
-    backgroundColor: "#f7f9fc",
+    padding: 24,
+    justifyContent: "center",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
     fontWeight: "700",
     marginBottom: 20,
-  },
-  label: {
-    marginTop: 10,
-    fontSize: 14,
-    fontWeight: "600",
+    textAlign: "center",
   },
   input: {
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
     borderWidth: 1,
     borderColor: "#ddd",
-    marginTop: 5,
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 14,
   },
   button: {
-    backgroundColor: "#0A66FF",
-    padding: 14,
+    backgroundColor: "#0066FF",
+    paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 10,
+  },
+  verifyButton: {
+    backgroundColor: "#00AA55",
   },
   buttonText: {
     color: "#fff",

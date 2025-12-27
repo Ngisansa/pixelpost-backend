@@ -1,15 +1,25 @@
-node_modules/
+# Environment files
 .env
-.env.local
-.env.production
+.env.*
 
+# Secrets / keys
 server/keys/
-server/keys/*.json
+*.json.json
 
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
 dist/
-build/
 
-*.log
-*.zip
-
+# OS
 .DS_Store
+Thumbs.db
+
+# Archives
+*.zip

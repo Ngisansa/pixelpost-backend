@@ -1,3 +1,6 @@
+// app/api/config.ts
+
 export const API_BASE =
   process.env.EXPO_PUBLIC_API_BASE ||
   "https://pixelpost-backend-clean.onrender.com";
+

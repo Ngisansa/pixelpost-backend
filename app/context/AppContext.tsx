@@ -53,6 +53,9 @@ export interface ConnectedAccount {
 ======================= */
 
 interface AppContextType {
+  // User (guest-safe)
+  user: null;
+
   // Posts
   posts: Post[];
   addPost: (post: Omit<Post, "id">) => void;
@@ -76,7 +79,7 @@ interface AppContextType {
   addCredits: (amount: number) => void;
   useCredit: () => boolean;
 
-  // Pro (READ ONLY outside)
+  // Pro
   isPro: boolean;
   activatePro: () => Promise<void>;
 
@@ -101,6 +104,9 @@ const PRO_KEY = "@pixelpost_is_pro";
 ======================= */
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  // Explicit guest user (NO auth assumptions)
+  const [user] = useState<null>(null);
+
   const [posts, setPosts] = useState<Post[]>(SAMPLE_POSTS);
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>(SAMPLE_NOTIFICATIONS);
@@ -227,7 +233,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
-  /* ---------- Pro (ONLY way to enable) ---------- */
+  /* ---------- Pro ---------- */
   const activatePro = async () => {
     setIsPro(true);
     await AsyncStorage.setItem(PRO_KEY, JSON.stringify(true));
@@ -239,6 +245,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        user,
+
         posts,
         addPost,
         updatePost,

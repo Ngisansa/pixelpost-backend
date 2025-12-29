@@ -17,6 +17,10 @@ yarn-error.log*
 web-build/
 dist/
 
+# Assets generated at build time
+assets/
+expo-env.d.ts
+
 # OS
 .DS_Store
 Thumbs.db

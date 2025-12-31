@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ======================
-   Global Middleware
+   Middleware
 ====================== */
 app.use(cors());
 app.use(express.json());
@@ -19,35 +19,35 @@ app.use(express.json());
 if (process.env.MONGO_URI) {
   mongoose
     .connect(process.env.MONGO_URI)
-    .then(() => console.log("Mongo connected"))
-    .catch((err) => console.error("Mongo connect error", err));
+    .then(() => console.log("✅ Mongo connected"))
+    .catch((err) => console.error("❌ Mongo connect error", err));
 }
 
 /* ======================
    Routes
 ====================== */
-
-// Users (IMPORTANT: fixes /users/me)
-const usersRoutes = require("./routes/users");
-app.use("/users", usersRoutes);
-
-// Payments (Paystack)
-const paymentsRoutes = require("./routes/payments");
-app.use("/payments", paymentsRoutes);
-
-// Other existing routes
+app.use("/users", require("./routes/users"));
+app.use("/api/payments", require("./routes/payments"));
 app.use("/api/posts", require("./routes/posts"));
 
 /* ======================
-   Health Check (optional but recommended)
+   Health Check
 ====================== */
 app.get("/", (req, res) => {
-  res.send("PixelPost Backend Running");
+  res.send("PixelPost backend running");
 });
 
 /* ======================
-   Server Start
+   Start Server
 ====================== */
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+app.get("/__debug", (req, res) => {
+  res.json({
+    status: "ok",
+    file: "server/index.js",
+    time: new Date().toISOString(),
+  });
 });

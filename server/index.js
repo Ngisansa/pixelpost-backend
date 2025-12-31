@@ -2,24 +2,21 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors"); // CORS must be imported BEFORE use()
+const cors = require("cors");
 
-const app = express(); // app must be created BEFORE app.use()
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ======================
    Global Middleware
 ====================== */
-
 app.use(cors());
 app.use(express.json());
 
 /* ======================
    Database
 ====================== */
-
 if (process.env.MONGO_URI) {
-  mongoose.set("debug", true);
   mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log("Mongo connected"))
@@ -30,18 +27,27 @@ if (process.env.MONGO_URI) {
    Routes
 ====================== */
 
-// 🔐 USERS (REQUIRED by frontend)
+// Users (IMPORTANT: fixes /users/me)
 const usersRoutes = require("./routes/users");
 app.use("/users", usersRoutes);
 
-// Existing API routes
+// Payments (Paystack)
+const paymentsRoutes = require("./routes/payments");
+app.use("/payments", paymentsRoutes);
+
+// Other existing routes
 app.use("/api/posts", require("./routes/posts"));
-app.use("/api/payments", require("./routes/payments"));
+
+/* ======================
+   Health Check (optional but recommended)
+====================== */
+app.get("/", (req, res) => {
+  res.send("PixelPost Backend Running");
+});
 
 /* ======================
    Server Start
 ====================== */
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
